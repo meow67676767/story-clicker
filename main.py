@@ -1,4 +1,12 @@
-import os
+import sys, os
+if getattr(sys, 'frozen', False):
+    os.chdir(sys._MEIPASS)
+    try:
+        import pgzero.loaders
+        pgzero.loaders.set_root(sys._MEIPASS)
+    except Exception:
+        pass
+
 os.environ["SDL_VIDEO_CENTERED"] = "1"
 import pgzrun , random , ctypes , pygame
 from platform import system as systam
