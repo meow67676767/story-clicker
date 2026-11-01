@@ -148,8 +148,6 @@ def draw():
         #menu
         fon_menu.draw()
         screen.draw.text("STORY CLICKER", center=(WIDTH // 2, 130), fontsize=56, color=(255, 230, 120), gcolor=(180, 110, 20), owidth=1.5, ocolor=(20, 10, 5), shadow=(3, 3), scolor="black")
-        #DEMO
-        screen.draw.text("DEMO", center=(590, 105), fontsize=24, color=(255, 60, 60), owidth=1.5, ocolor="black", angle=12)
         play_button.draw()
         settings_button.draw()
         library_button.draw()
