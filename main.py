@@ -140,6 +140,72 @@ hints = [
 ]
 current_hint = ""
 
+# Бестиарий (Хроники монстров)
+bestiary_index = 0
+defeated_bosses = {"slime": False, "knight": False}
+
+bestiary_actors = [
+    Actor("enemy_slime", (170, 245)),
+    Actor("enemy_knight", (170, 245))
+]
+
+bestiary_tab_rects = [
+    Rect(155, 85, 230, 36),
+    Rect(415, 85, 230, 36)
+]
+bestiary_prev_rect = Rect(105, 85, 36, 36)
+bestiary_next_rect = Rect(659, 85, 36, 36)
+bestiary_back_btn  = Actor("back_button", (WIDTH // 2, 535))
+
+bestiary_data = [
+    {
+        "id": "slime",
+        "name": "Мастер Илларион",
+        "title": "Падший Королевский Алхимик",
+        "level": "УРОВЕНЬ 1 • ЛЕС",
+        "element": "Кислота / Тёмная Аркана",
+        "hp_easy": 50,
+        "hp_normal": 100,
+        "hp_hard": 200,
+        "reward_click": "+0.5G",
+        "reward_kill": "+50G",
+        "drop": "Осколок алхимической колбы",
+        "lore": [
+            "Главный алхимик Арканума, искавший секрет вечной жизни",
+            "в сиянии Древнего Сапфира. В ночь Катастрофы едкие растворы",
+            "лаборатории сплавились с его телом, обратив учёного в",
+            "гигантский пульсирующий сгусток эктоплазмы с латунными очками.",
+            "Рассудок угас, но кислотные рефлексы защищают опушку леса."
+        ],
+        "quote_title": "Запись из найденного лабораторного дневника:",
+        "quote_l1": "«Сапфировая пыль не вступает в реакцию... она поглощает воду.",
+        "quote_l2": "Я слышу шепот из колбы. Он обещает вечность...»"
+    },
+    {
+        "id": "knight",
+        "name": "Сир Мордред",
+        "title": "Падший Страж Катакомб",
+        "level": "УРОВЕНЬ 2 • КАТАКОМБЫ",
+        "element": "Изумрудная чума / Проклятая сталь",
+        "hp_easy": 150,
+        "hp_normal": 300,
+        "hp_hard": 600,
+        "reward_click": "+0.5G",
+        "reward_kill": "+150G",
+        "drop": "Рунический двуручный меч",
+        "lore": [
+            "Командующий Королевской Гвардии и несокрушимый щит короны.",
+            "При прорыве чумы запечатал гермоворота катакомб изнутри,",
+            "пожертвовав собой ради спасения нижнего города Арканума.",
+            "Кристаллическая зараза проросла сквозь сталь его доспехов,",
+            "обратив воина в базальтовую статую с руническим клинком."
+        ],
+        "quote_title": "Эпитафия на разрушенном гербовом монументе:",
+        "quote_l1": "«Здесь пал Орден Железной Розы. Мы заперли врата.",
+        "quote_l2": "Да простит нас свет за то, что останется внутри...»"
+    }
+]
+
 
 
 # Отрисовка
@@ -270,11 +336,89 @@ def draw():
 
         back_button.draw()
     elif mode == "library":
-        #library window
+        #library window (Бестиарий)
         library_fon.draw()
-        back_button.draw()
-        screen.draw.text("coming soon...", center=(WIDTH // 2, HEIGHT // 2), fontsize=36, color="white", owidth=1.5, ocolor="black")
-        screen.draw.text("будет в финальной версии игры", center=(WIDTH // 2, HEIGHT // 1.8), fontsize=36, color="red", owidth=1.5, ocolor="black")
+        m = bestiary_data[bestiary_index]
+        
+        screen.draw.text("БЕСТИАРИЙ", center=(WIDTH // 2, 30), fontsize=36, color="gold", owidth=1.5, ocolor="black")
+        screen.draw.text("Хроники проклятого королевства Арканум", center=(WIDTH // 2, 58), fontsize=16, color=(210, 195, 170), owidth=1, ocolor="black")
+        
+        # Навигация: стрелки переключения
+        screen.draw.filled_rect(bestiary_prev_rect, (30, 32, 42))
+        screen.draw.rect(bestiary_prev_rect, "gold")
+        screen.draw.text("<", center=bestiary_prev_rect.center, fontsize=24, color="gold", owidth=1, ocolor="black")
+        
+        screen.draw.filled_rect(bestiary_next_rect, (30, 32, 42))
+        screen.draw.rect(bestiary_next_rect, "gold")
+        screen.draw.text(">", center=bestiary_next_rect.center, fontsize=24, color="gold", owidth=1, ocolor="black")
+        
+        # Вкладки выбора созданий
+        for i, tab_rect in enumerate(bestiary_tab_rects):
+            is_active = (i == bestiary_index)
+            bg_col = (48, 38, 20) if is_active else (22, 25, 32)
+            bd_col = "gold" if is_active else (90, 95, 110)
+            txt_col = "gold" if is_active else (150, 150, 150)
+            screen.draw.filled_rect(tab_rect, bg_col)
+            screen.draw.rect(tab_rect, bd_col)
+            screen.draw.text(f"{i + 1}. {bestiary_data[i]['name']}", center=tab_rect.center, fontsize=17, color=txt_col, owidth=1, ocolor="black")
+            
+        # Левая рамка: портрет монстра и статусы
+        left_rect = Rect(45, 135, 250, 345)
+        screen.draw.filled_rect(left_rect, (18, 22, 30))
+        screen.draw.rect(left_rect, (180, 140, 50))
+        screen.draw.rect(Rect(49, 139, 242, 337), (60, 50, 35))
+        
+        bestiary_actors[bestiary_index].draw()
+        
+        screen.draw.text(m["name"], center=(170, 372), fontsize=19, color="gold", owidth=1.2, ocolor="black")
+        screen.draw.text(m["title"], center=(170, 396), fontsize=14, color=(220, 210, 190), owidth=1, ocolor="black")
+        screen.draw.text(m["element"], center=(170, 418), fontsize=13, color=(140, 225, 170), owidth=1, ocolor="black")
+        
+        badge_rect = Rect(60, 438, 220, 26)
+        if defeated_bosses[m["id"]]:
+            screen.draw.filled_rect(badge_rect, (20, 50, 28))
+            screen.draw.rect(badge_rect, (80, 200, 100))
+            screen.draw.text("✓ БОСС ПОБЕЖДЁН", center=(170, 451), fontsize=13, color=(140, 255, 160), owidth=1, ocolor="black")
+        else:
+            screen.draw.filled_rect(badge_rect, (50, 25, 20))
+            screen.draw.rect(badge_rect, (200, 80, 50))
+            screen.draw.text("⚠ БОСС НЕ ПОВЕРЖЕН", center=(170, 451), fontsize=13, color=(255, 180, 100), owidth=1, ocolor="black")
+            
+        # Правая рамка: характеристики, хроники и лор
+        right_rect = Rect(308, 135, 447, 345)
+        screen.draw.filled_rect(right_rect, (18, 22, 30))
+        screen.draw.rect(right_rect, (180, 140, 50))
+        screen.draw.rect(Rect(312, 139, 439, 337), (60, 50, 35))
+        
+        screen.draw.text("ХАРАКТЕРИСТИКИ", topleft=(325, 146), fontsize=17, color="gold", owidth=1.2, ocolor="black")
+        screen.draw.text(m["level"], topright=(740, 147), fontsize=14, color=(220, 200, 140), owidth=1, ocolor="black")
+        screen.draw.line((325, 168), (740, 168), (140, 110, 45))
+        
+        screen.draw.text("Здоровье (HP):", topleft=(325, 175), fontsize=14, color=(170, 180, 195), owidth=1, ocolor="black")
+        hp_text = f"{m['hp_easy']} (Лёгк) / {m['hp_normal']} (Сред) / {m['hp_hard']} (Слож)"
+        screen.draw.text(hp_text, topleft=(435, 175), fontsize=14, color="crimson", owidth=1, ocolor="black")
+        
+        screen.draw.text("Награда:", topleft=(325, 197), fontsize=14, color=(170, 180, 195), owidth=1, ocolor="black")
+        screen.draw.text(f"Клик {m['reward_click']}  |  Победа {m['reward_kill']}", topleft=(395, 197), fontsize=14, color="gold", owidth=1, ocolor="black")
+        
+        screen.draw.text("Трофей / Дроп:", topleft=(325, 219), fontsize=14, color=(170, 180, 195), owidth=1, ocolor="black")
+        screen.draw.text(m["drop"], topleft=(435, 219), fontsize=14, color=(255, 220, 120), owidth=1, ocolor="black")
+        
+        screen.draw.line((325, 241), (740, 241), (140, 110, 45))
+        screen.draw.text("ХРОНИКИ И ЛОР", topleft=(325, 248), fontsize=17, color="gold", owidth=1.2, ocolor="black")
+        
+        y_l = 272
+        for l in m["lore"]:
+            screen.draw.text(l, topleft=(325, y_l), fontsize=14, color=(235, 225, 205), owidth=1, ocolor="black")
+            y_l += 20
+            
+        screen.draw.line((325, 380), (740, 380), (110, 85, 35))
+        screen.draw.text(m["quote_title"], topleft=(325, 388), fontsize=13, color=(180, 170, 150), owidth=1, ocolor="black")
+        screen.draw.text(m["quote_l1"], center=(531, 412), fontsize=14, color=(255, 225, 140), owidth=1, ocolor="black")
+        screen.draw.text(m["quote_l2"], center=(531, 432), fontsize=14, color=(255, 225, 140), owidth=1, ocolor="black")
+        
+        screen.draw.text("Используй стрелки [ < ] [ > ] или кликай по вкладкам для смены цели", center=(WIDTH // 2, 492), fontsize=13, color=(160, 155, 140), owidth=1, ocolor="black")
+        bestiary_back_btn.draw()
     elif mode == 'victory':
         settings_fon.draw()
         screen.draw.text("ДЕМО ПРОЙДЕНО!", center=(WIDTH // 2, 140), fontsize=42, color="gold", owidth=1.5, ocolor="black")
@@ -323,7 +467,7 @@ def update(dt):
 
 #mouse!!!
 def on_mouse_down(button, pos):
-    global mode , current_bg , current_hint , volume , difficulty , shop_open , music_volume , enemy_hp , gold , click_damage , story_timer , diff_mult , enemy_max_hp , upg_dmg_lvl, upg_dmg_cost, upg_gold_lvl, upg_gold_cost, upg_poison_lvl, upg_poison_cost, passive_dps, upg_mine_lvl, upg_mine_cost, passive_gold, gold_given_per_click, enemy_max_hp , current_level, enemy_name
+    global mode , current_bg , current_hint , volume , difficulty , shop_open , music_volume , enemy_hp , gold , click_damage , story_timer , diff_mult , enemy_max_hp , upg_dmg_lvl, upg_dmg_cost, upg_gold_lvl, upg_gold_cost, upg_poison_lvl, upg_poison_cost, passive_dps, upg_mine_lvl, upg_mine_cost, passive_gold, gold_given_per_click, enemy_max_hp , current_level, enemy_name, bestiary_index
     if mode == "menu":
         #menu here
         if play_button.collidepoint(pos):
@@ -407,10 +551,22 @@ def on_mouse_down(button, pos):
             sounds.click1.play()
             mode = "game"
     elif mode == "library":
-        #library here
-        if back_button.collidepoint(pos):
+        # Навигация в бестиарии
+        if bestiary_back_btn.collidepoint(pos) or back_button.collidepoint(pos):
             sounds.click1.play()
             mode = "menu"
+        elif bestiary_prev_rect.collidepoint(pos):
+            sounds.click1.play()
+            bestiary_index = (bestiary_index - 1) % len(bestiary_data)
+        elif bestiary_next_rect.collidepoint(pos):
+            sounds.click1.play()
+            bestiary_index = (bestiary_index + 1) % len(bestiary_data)
+        else:
+            for i, tab_rect in enumerate(bestiary_tab_rects):
+                if tab_rect.collidepoint(pos):
+                    sounds.click1.play()
+                    bestiary_index = i
+                    break
     elif mode == "game":
         #game here
         if shop_tab.collidepoint(pos):
@@ -431,6 +587,7 @@ def on_mouse_down(button, pos):
             if enemy_hp <= 0:
                 sounds.coin.play()
                 if current_level == 1:
+                    defeated_bosses["slime"] = True
                     gold += 50
                     current_level = 2
                     enemy.image = "enemy_knight"
@@ -439,6 +596,7 @@ def on_mouse_down(button, pos):
                     enemy_max_hp = int(300 * diff_mult)
                     enemy_hp = enemy_max_hp
                 elif current_level == 2:
+                    defeated_bosses["knight"] = True
                     gold += 150
                     mode = "victory"
                     
@@ -514,7 +672,22 @@ def on_mouse_down(button, pos):
 """
 
 
-# def on_key_down(key):
+def on_key_down(key):
+    global mode, bestiary_index
+    if mode == "library":
+        if key == keys.LEFT:
+            sounds.click1.play()
+            bestiary_index = (bestiary_index - 1) % len(bestiary_data)
+        elif key == keys.RIGHT:
+            sounds.click1.play()
+            bestiary_index = (bestiary_index + 1) % len(bestiary_data)
+        elif key == keys.ESCAPE:
+            sounds.click1.play()
+            mode = "menu"
+    elif mode in ("settings", "settings1"):
+        if key == keys.ESCAPE:
+            sounds.click1.play()
+            mode = "menu" if mode == "settings" else "game"
 
 
 pygame.mixer.init()
