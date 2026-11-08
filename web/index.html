@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Story Clicker — Тёмное фэнтези RPG-кликер</title>
+  <link rel="icon" href="app_icon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Верхняя панель навигации -->
+  <header class="top-header">
+    <div class="brand">
+      <span class="brand-icon">⚔️</span>
+      <div>
+        <span class="brand-title">STORY CLICKER</span>
+        <span class="brand-badge">v1.1 Demo</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <a href="https://github.com/meow67676767/story-clicker/releases/tag/v1.1" target="_blank" class="btn-action btn-download" title="Скачать standalone сборку без необходимости ставить Python">
+        <span>📥</span> Скачать .EXE (Windows)
+      </a>
+      <a href="https://github.com/meow67676767/story-clicker" target="_blank" class="btn-action" title="Перейти к репозиторию с исходным кодом">
+        <span>⭐</span> GitHub Код
+      </a>
+      <button id="fullscreenBtn" class="btn-action" title="Развернуть игру на весь экран">
+        <span>⛶</span> На весь экран
+      </button>
+      <button id="soundToggleBtn" class="btn-action" title="Включить / заглушить звук">
+        <span>🔊</span> Звук
+      </button>
+    </div>
+  </header>
+
+  <!-- Игровая сцена -->
+  <main class="game-container">
+    <div class="canvas-frame">
+      <canvas id="gameCanvas" width="800" height="600"></canvas>
+      <div id="audioHint" class="audio-hint">🎵 Кликните по экрану для включения звука и музыки</div>
+    </div>
+
+    <!-- Информационный блок для проверки учителем -->
+    <section class="controls-info">
+      <article class="info-card">
+        <h4>⚔️ Управление</h4>
+        <ul>
+          <li><strong>ЛКМ (Клик):</strong> Атака монстра, покупка апгрейдов, навигация.</li>
+          <li><strong>Выдвижная лавка:</strong> Клик по ярлычку слева открывает магазин прокачки.</li>
+          <li><strong>Клавиши [←] / [→]:</strong> Листать карточки в Бестиарии.</li>
+          <li><strong>Клавиша [Esc]:</strong> Возврат назад в главное меню.</li>
+        </ul>
+      </article>
+
+      <article class="info-card">
+        <h4>📜 Сюжет и цели</h4>
+        <p>
+          Королевство Арканум пало жертвой Изумрудной Чумы. Ты — последний Странник Ордена Очищения. 
+          Победи <strong>Мастера Иллариона</strong> в Зачарованном Лесу, открой путь в Катакомбы Цитадели и одолей закованного в скверну <strong>Сира Мордреда</strong>!
+        </p>
+      </article>
+
+      <article class="info-card">
+        <h4>✨ Реализованные механики</h4>
+        <ul>
+          <li><strong>4 ветки прокачки:</strong> Урон клинка, Золотые пальцы, Скверный яд (DPS), Монетница (пассивное золото).</li>
+          <li><strong>3 уровня сложности:</strong> Динамический баланс HP монстров.</li>
+          <li><strong>Интерактивный Бестиарий:</strong> Лор, характеристики, трофеи и хроники боссов.</li>
+        </ul>
+      </article>
+    </section>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
